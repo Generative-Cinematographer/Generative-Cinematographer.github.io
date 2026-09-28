@@ -2,7 +2,7 @@
 
 Academic project page for **Generative Cinematographer: Composing Camera and Object Motion in 3D**.
 
-**Website:** https://neuralcinema.github.io/
+**Website:** https://generative-cinematographer.github.io/
 
 The page explains the method and includes interactive illustrations, authored 3D motion, generated results, and side-by-side video comparisons. All website assets are committed here and served directly by GitHub Pages. No S3 bucket, tunnel, login, external font service, or third-party video player is needed.
 
