@@ -25,7 +25,8 @@ img,video,canvas{max-width:100%;display:block}
 .skip{position:absolute;top:-100px;left:20px;background:#fff;padding:8px;z-index:20}.skip:focus{top:8px}
 .hero{padding:56px 0 36px;text-align:center}
 h1{font-size:clamp(30px,3.8vw,44px);line-height:1.2;font-weight:700;margin:0 auto 18px;max-width:900px;letter-spacing:-.015em}
-.authors{font-size:19px;font-style:italic;margin:0 0 6px;line-height:1.7}
+.authors{font-size:clamp(15px,1.45vw,18px);font-style:italic;margin:0 0 6px;line-height:1.7}
+@media(min-width:900px){.authors{white-space:nowrap}}
 .authors span{white-space:nowrap}
 .authors sup,.affil sup{font-style:normal;font-size:.62em;margin-left:1px}
 .affil{font-size:16px;color:var(--muted);margin:0}
@@ -108,7 +109,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </head>
 <body id="top"><a class="skip" href="#abstract">Skip to content</a>
 <main>
-<header class="hero"><div class="page">
+<header class="hero"><div class="page hero-inner">
 <h1>Generative Cinematographer: Composing Camera and Object Motion in 3D</h1>
 <p class="authors"><span>Jiahan Zhang<sup>1</sup></span>, <span>Chaohao Yang<sup>1</sup></span>, <span>Namitha Guruprasad<sup>1</sup></span>, <span>Vivekjyoti Banerjee<sup>1</sup></span>, <span>Trong-Tung Nguyen<sup>1</sup></span>, <span>Alan Yuille<sup>1</sup></span>, <span>Anand Bhattad<sup>1</sup></span></p>
 <p class="affil"><sup>1</sup>Johns Hopkins University</p>
