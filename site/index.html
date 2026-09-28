@@ -10,107 +10,109 @@
 <meta property="og:title" content="Generative Cinematographer"><meta property="og:description" content="Composing Camera and Object Motion in 3D"><meta property="og:type" content="website">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
-:root{--ink:#1f2328;--muted:#555b62;--line:#d9dcdf;--soft:#f5f6f7;--link:#1a4f9c;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;--serif:Georgia,'Times New Roman',serif}
+:root{--ink:#222629;--muted:#5a6068;--line:#dde0e4;--soft:#f5f6f8;--band:#f7f8fa;--link:#1f5fa8;--dark:#2b2f33;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;--serif:Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#fff;color:var(--ink);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
 a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
 button,select,input{font:inherit;color:inherit}
 button,select{cursor:pointer}
-button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 img,video,canvas{max-width:100%;display:block}
 [hidden]{display:none!important}
-.page{width:min(1000px,calc(100% - 40px));margin:0 auto}
+.page{width:min(1040px,calc(100% - 40px));margin:0 auto}
+.narrow{max-width:860px;margin-left:auto;margin-right:auto}
 .skip{position:absolute;top:-100px;left:20px;background:#fff;padding:8px;z-index:20}.skip:focus{top:8px}
-header.title-block{padding:48px 0 8px}
-h1{font-size:clamp(28px,3.6vw,40px);line-height:1.2;font-weight:700;margin:0 0 14px;letter-spacing:-.01em}
-.authors{font-size:19px;font-style:italic;margin:0 0 4px;color:var(--ink)}
-.authors sup,.affil sup{font-size:.65em;font-style:normal}
-.affil{font-size:15px;color:var(--muted);margin:0 0 4px}
-.venue{font-size:15px;color:var(--muted);margin:0}
-.links{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
-.links a,.links button{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:3px;padding:5px 14px;font-size:15px;color:var(--link)}
-.links a:hover{background:var(--soft);text-decoration:none}
-.links button[disabled]{color:#8a8f95;cursor:default}
-section{padding:26px 0 8px;border-top:1px solid var(--line);margin-top:26px}
-h2{font-size:24px;line-height:1.3;font-weight:700;margin:0 0 12px}
+.hero{padding:56px 0 36px;text-align:center}
+h1{font-size:clamp(30px,3.8vw,44px);line-height:1.2;font-weight:700;margin:0 auto 18px;max-width:900px;letter-spacing:-.015em}
+.authors{font-size:19px;font-style:italic;margin:0 0 6px;line-height:1.7}
+.authors span{white-space:nowrap}
+.authors sup,.affil sup{font-style:normal;font-size:.62em;margin-left:1px}
+.affil{font-size:16px;color:var(--muted);margin:0}
+.links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:22px 0 0}
+.links a,.links button{display:inline-flex;align-items:center;gap:7px;border:0;background:var(--dark);color:#fff;border-radius:6px;padding:8px 18px;font-size:15px;font-weight:500}
+.links a:hover{background:#000;text-decoration:none}
+.links button[disabled]{background:#9aa0a6;cursor:default}
+.links svg{width:16px;height:16px;fill:currentColor}
+.teaser{margin-top:34px;text-align:left}
+.section{padding:48px 0}
+.section.band{background:var(--band);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+h2{font-size:27px;line-height:1.3;font-weight:700;margin:0 0 20px;text-align:center}
 h3{font-size:17px;margin:0 0 4px}
-p{margin:0 0 12px}
+p{margin:0 0 14px}
 figure{margin:0}
-figcaption,.caption{font-size:15px;color:var(--muted);line-height:1.5}
-.teaser{margin-top:24px}
-.picker{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px;font-size:15px}
+figcaption,.caption{font-size:15px;color:var(--muted);line-height:1.55}
+.picker{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin:0 0 14px;font-size:15px}
 .picker-label{color:var(--muted);margin-right:4px}
 .toggle-group{display:flex;flex-wrap:wrap;gap:6px}
-.small-button{white-space:nowrap}
-.toggle-group button,.small-button{border:1px solid var(--line);background:#fff;border-radius:3px;padding:4px 11px;font-size:14px}
-.toggle-group button:hover,.small-button:hover{background:var(--soft)}
-.toggle-group button[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:#fff}
-.triptych,.comparison-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.toggle-group button,.small-button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 13px;font-size:14px;white-space:nowrap}
+.toggle-group button:hover,.small-button:hover{border-color:#b9bec4}
+.toggle-group button[aria-pressed=true]{border-color:var(--dark);background:var(--dark);color:#fff}
+.triptych,.comparison-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .panel{min-width:0;position:relative}
-.panel-label{font-size:14px;color:var(--muted);margin:0 0 4px;min-height:22px;padding-right:30px}
-.visual{position:relative;background:var(--soft);border:1px solid var(--line);aspect-ratio:832/480;overflow:hidden}
+.panel-label{font-size:14px;font-weight:600;color:var(--ink);margin:0 0 6px;min-height:22px;padding-right:30px}
+.visual{position:relative;background:#eef0f2;border-radius:6px;aspect-ratio:832/480;overflow:hidden}
 .visual img,.visual video{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
-.enlarge{position:absolute;right:6px;top:6px;width:26px;height:26px;display:grid;place-items:center;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:3px;font-size:15px;line-height:1}
+.enlarge{position:absolute;right:6px;top:6px;width:26px;height:26px;display:grid;place-items:center;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:4px;font-size:15px;line-height:1}
 .panel>.enlarge{top:-3px;right:0}
-.teaser-foot{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-top:10px}
+.teaser-foot{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-top:12px}
 .teaser-foot p{margin:0}
 .load-error{position:absolute;inset:auto 8px 8px;background:#fff;border:1px solid var(--line);padding:6px 8px;font-size:13px}
-.paper-figure{margin:16px 0 8px}
-.figure-button{display:block;width:100%;padding:0;border:1px solid var(--line);background:#fff;cursor:zoom-in}
-.paper-figure figcaption{margin-top:8px}
-.formula{font-family:var(--serif);font-size:19px;text-align:center;margin:10px 0 14px}
-ol.steps{padding-left:22px;margin:0 0 12px}ol.steps li{margin-bottom:6px}
-.lab{border:1px solid var(--line);padding:16px;margin:16px 0}
-.lab-controls{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-end;margin-bottom:14px;font-size:15px}
+.paper-figure{margin:20px 0 10px}
+.figure-button{display:block;width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:zoom-in}
+.figure-button img{width:100%;height:auto}
+.paper-figure figcaption{margin-top:10px;text-align:center}
+.formula{font-family:var(--serif);font-size:20px;text-align:center;margin:12px 0 16px}
+ol.steps{padding-left:22px;margin:0 0 14px}ol.steps li{margin-bottom:8px;padding-left:4px}
+.lab{border:1px solid var(--line);border-radius:6px;background:#fff;padding:20px;margin:22px 0}
+.lab-controls{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-end;margin-bottom:16px;font-size:15px}
 .lab-controls label{display:flex;flex-direction:column;min-width:220px}
 .lab-controls output{color:var(--muted);font-size:14px}
-.lab-body{display:grid;grid-template-columns:1fr;gap:16px}.world-view{max-width:600px}
-.lab canvas{width:100%;height:auto;border:1px solid var(--line)}
-.canvas-title{font-size:14px;color:var(--muted);margin:0 0 4px}
+.lab-body{display:grid;grid-template-columns:1fr;gap:16px}.world-view{max-width:600px;width:100%;margin:0 auto}
+.lab canvas{width:100%;height:auto;border:1px solid var(--line);border-radius:4px}
+.canvas-title{font-size:14px;font-weight:600;margin:0 0 6px}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:6px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#8a9099;margin-right:5px}.legend i.handle{background:#3b8ca4}.legend i.camera{background:#c8793d}
-.map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.map-card h3{font-size:15px;margin:6px 0 2px}.map-card p{font-size:14px;color:var(--muted);margin:0}
+.map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.map-card h3{font-size:15px;margin:8px 0 2px}.map-card p{font-size:14px;color:var(--muted);margin:0}
 .swatch-row{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:4px}
 .swatch{width:12px;height:12px;border:1px solid var(--line);display:inline-block}
-.lab-note{grid-column:1/-1;font-size:14px;color:var(--ink);margin:0}
-.lab-footer{font-size:14px;color:var(--muted);margin:12px 0 0}
-.compare-settings{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:10px;font-size:15px}
-.compare-settings label{display:flex;flex-direction:column;font-size:14px;color:var(--muted)}
-select{border:1px solid var(--line);border-radius:3px;background:#fff;padding:4px 8px;font-size:15px;color:var(--ink);min-width:220px}
-.compare-instruction{font-size:15px;margin-bottom:10px}
-.compare-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;font-size:14px;color:var(--muted)}
+.lab-note{grid-column:1/-1;font-size:14px;margin:0}
+.lab-footer{font-size:14px;color:var(--muted);margin:14px 0 0}
+.compare-settings{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:12px}
+.compare-settings label{display:flex;flex-direction:column;font-size:14px;font-weight:600}
+select{border:1px solid var(--line);border-radius:6px;background:#fff;padding:5px 8px;font-size:15px;font-weight:400;color:var(--ink);min-width:220px}
+.compare-instruction{font-size:15px;margin-bottom:12px}
+.compare-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;margin-top:12px;font-size:14px;color:var(--muted)}
 .compare-bottom p{margin:0}
-.media-note{font-size:14px;color:var(--muted);margin-top:10px}
-.gallery-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;font-size:14px;color:var(--muted)}
-.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 12px}
-.gallery-caption{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-top:5px}
+.media-note{font-size:14px;color:var(--muted);margin-top:14px}
+.gallery-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;font-size:14px;color:var(--muted)}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 14px}
+.gallery-caption{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-top:6px}
 .gallery-caption h3{font-size:15px;font-weight:600;margin:0}
 .gallery-caption p{font-size:13px;color:var(--muted);margin:0}
 .text-button{background:none;border:0;padding:0;color:var(--link);font-size:13px;white-space:nowrap}
 .text-button:hover{text-decoration:underline}
-pre.bibtex{background:var(--soft);border:1px solid var(--line);padding:14px 16px;font-size:13.5px;line-height:1.5;overflow-x:auto;margin:0}
-footer{border-top:1px solid var(--line);margin:32px auto 0;padding:16px 0 40px;font-size:14px;color:var(--muted)}
-dialog{border:1px solid var(--line);padding:0;width:min(1100px,94vw);max-height:92vh;background:#fff;color:var(--ink)}
+pre.bibtex{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px;font-size:13.5px;line-height:1.55;overflow-x:auto;margin:0}
+footer{padding:24px 0 40px;font-size:14px;color:var(--muted);text-align:center}
+dialog{border:1px solid var(--line);border-radius:6px;padding:0;width:min(1100px,94vw);max-height:92vh;background:#fff;color:var(--ink)}
 dialog::backdrop{background:rgba(0,0,0,.6)}
 .modal-head{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line)}
-.modal-head h2{font-size:16px;margin:0}
+.modal-head h2{font-size:16px;margin:0;text-align:left}
 #closeDialog{background:none;border:0;font-size:24px;line-height:1;padding:0 4px}
 .modal-content{padding:12px;overflow:auto;max-height:calc(92vh - 50px)}
 .modal-content video,.modal-content img{width:100%;height:auto;max-height:80vh;object-fit:contain;margin:auto}
-@media(max-width:760px){.triptych,.comparison-grid,.gallery-grid,.map-grid{grid-template-columns:1fr}.teaser-foot{flex-direction:column}.authors{font-size:17px}}
+@media(max-width:760px){.triptych,.comparison-grid,.gallery-grid,.map-grid{grid-template-columns:1fr}.teaser-foot{flex-direction:column}.authors{font-size:17px}.section{padding:36px 0}}
 @media(max-width:1000px) and (min-width:761px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body id="top"><a class="skip" href="#abstract">Skip to content</a>
-<main class="page">
-<header class="title-block">
+<main>
+<header class="hero"><div class="page">
 <h1>Generative Cinematographer: Composing Camera and Object Motion in 3D</h1>
-<p class="authors">Jiahan Zhang<sup>1</sup>, Chaohao Yang<sup>1</sup>, Namitha Guruprasad<sup>1</sup>, Vivekjyoti Banerjee<sup>1</sup>, Trong-Tung Nguyen<sup>1</sup>, Alan Yuille<sup>1</sup>, Anand Bhattad<sup>1</sup></p>
+<p class="authors"><span>Jiahan Zhang<sup>1</sup></span>, <span>Chaohao Yang<sup>1</sup></span>, <span>Namitha Guruprasad<sup>1</sup></span>, <span>Vivekjyoti Banerjee<sup>1</sup></span>, <span>Trong-Tung Nguyen<sup>1</sup></span>, <span>Alan Yuille<sup>1</sup></span>, <span>Anand Bhattad<sup>1</sup></span></p>
 <p class="affil"><sup>1</sup>Johns Hopkins University</p>
-<div class="links"><a href="assets/paper.pdf" target="_blank" rel="noopener">Paper (PDF)</a><button class="nav-paper" type="button" disabled>arXiv (not yet available)</button><a href="#bibtex">BibTeX</a></div>
-</header>
+<div class="links"><a href="assets/paper.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6zM14 3.5V8h4.5z"/></svg>Paper</a><button class="nav-paper" type="button" disabled>arXiv (coming soon)</button><a href="#bibtex">BibTeX</a></div>
 
 <div class="teaser" id="heroPreview" role="region" aria-label="Selected example">
 <div class="picker"><span class="picker-label" id="examplePickerTitle">Example:</span><div id="heroTabs" class="toggle-group" role="group" aria-labelledby="examplePickerTitle"></div></div>
@@ -122,22 +124,23 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <div class="teaser-foot"><p class="caption" id="heroCaption"></p><button class="small-button" id="globalPlay" aria-pressed="true">Pause videos</button></div>
 <p class="caption" style="margin-top:8px">From a single image, the camera path and the motion of selected foreground regions are authored in one 3D scene. Orange marks camera poses and paths; other colors mark foreground trajectories.</p>
 </div>
+</div></header>
 
-<section id="abstract" class="abstract">
+<section id="abstract" class="section"><div class="page narrow">
 <h2>Abstract</h2>
 <p>Existing controllable video generation methods can model camera motion or object motion, but most operate through image-space controls such as 2D trajectories or sparse drag signals. These controls are fundamentally ambiguous: the same image-plane motion may correspond to multiple underlying 3D motions, making camera motion and object motion difficult to disentangle under viewpoint changes. We present Generative Cinematographer, a controllable video generation framework that lifts a monocular image or video into an editable 4D scene scaffold where camera motion and foreground motion are authored jointly in a shared world frame. Our key observation is that world-space motion can be rasterized into dense correspondence maps that preserve persistent identities across viewpoints while remaining compatible with RGB-pretrained video diffusion models. The resulting representation supports sparse local 3D motion handles, coordinated camera–object choreography, and piecewise-rigid approximations of non-rigid motion without requiring physics simulators or category-specific priors. To preserve the generative prior of a pretrained video model, we freeze a Wan-based diffusion backbone and condition it through lightweight adaptation layers driven by the proposed correspondence representation. Experiments demonstrate coherent camera-relative motion, improved geometric consistency under viewpoint changes, and strong controllability across diverse real-world scenes.</p>
-</section>
+</div></section>
 
-<section id="contributions">
+<section id="contributions" class="section band"><div class="page narrow">
 <h2>Contributions</h2>
 <ol class="steps">
 <li>A dense correspondence-map representation that encodes point identity and position in a shared world coordinate system, as rasterized maps compatible with pretrained video VAEs.</li>
 <li>A local 3D motion-handle formulation that approximates non-rigid motion through independently controlled local rigid regions, without a simulator or a category-specific prior.</li>
 <li>A world-space authoring interface for joint control of camera trajectories and local object motion from a single image.</li>
 </ol>
-</section>
+</div></section>
 
-<section id="method">
+<section id="method" class="section"><div class="page">
 <h2>Method</h2>
 <figure class="paper-figure"><button class="figure-button" data-image="assets/framework.png" data-title="Framework overview" aria-label="Enlarge the framework figure"><img src="assets/framework.png" alt="Framework: input RGB, estimated depth and mask, 3D motion authoring, correspondence maps, VAE, main and side diffusion branches, and generated video" loading="lazy" width="2200"></button><figcaption>Framework overview. Click the figure to enlarge it, or open the <a href="assets/framework.pdf?v=1460f1a9b84d" target="_blank" rel="noopener">vector PDF</a>.</figcaption></figure>
 <ol class="steps">
@@ -147,9 +150,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <li>A frozen Wan VAE encodes the maps. A trainable side branch, convolutional projections between branches, and LoRA adapters in the main branch condition the frozen diffusion model on them.</li>
 </ol>
 <p>Only the side branch, the cross-branch projections, and the LoRA adapters are trained. The side branch runs at half the spatial resolution of the main branch and adds its features to the main branch through residual connections.</p>
-</section>
+</div></section>
 
-<section id="representation">
+<section id="representation" class="section band"><div class="page">
 <h2>Correspondence maps</h2>
 <p>Both XYZ maps are normalized once, using the bounding-box center <em>o</em> and half-range <em>σ</em> of the first-frame scene. The normalized X, Y, and Z coordinates are stored as red, green, and blue, with the same normalization in every frame:</p>
 <div class="formula">RGB = ½ [(p − o) / σ + 1]</div>
@@ -168,9 +171,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <p class="lab-footer">A schematic with one handle and sparse background points; no model is run. Both foreground maps share the same projected footprint. The identity map uses a fixed base color weighted by a Gaussian footprint, and invalid pixels are zero.</p>
 </div>
 <figure class="paper-figure"><button class="figure-button" data-image="assets/correspondence-cropped.png" data-title="World-space correspondence across viewpoints" aria-label="Enlarge correspondence figure"><img src="assets/correspondence-cropped.png" loading="lazy" width="2468" height="817" alt="Static colored points and a moving bus seen from three viewpoints"></button><figcaption>Background points keep their world-coordinate colors across three viewpoints, while the moving bus changes position. <a href="assets/correspondence.pdf?v=8115edc5b9da" target="_blank" rel="noopener">Vector PDF</a>.</figcaption></figure>
-</section>
+</div></section>
 
-<section id="compare">
+<section id="compare" class="section"><div class="page">
 <h2>Comparisons</h2>
 <p>Select a scene and a baseline. The left panel shows the control input; the videos can be restarted together.</p>
 <div class="compare-settings"><label for="caseSelect">Scene<select id="caseSelect"></select></label><label for="modelSelect">Baseline<select id="modelSelect"></select></label><button class="small-button" id="replayCompare">Restart videos</button></div>
@@ -182,22 +185,22 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </div>
 <div class="compare-bottom"><div class="toggle-group" id="controlModes" role="group" aria-label="Control view"><button data-control="camera" aria-pressed="true">Camera overview</button><button data-control="scene" aria-pressed="false">Scene detail</button><button data-control="input" aria-pressed="false">Input image</button><button data-control="annotation" aria-pressed="false">2D control</button></div><p>Orange: camera. Other colors: foreground motion.</p></div>
 <p class="media-note">All examples are authored by hand. The baselines take different kinds of control input, so their conditioning is not identical to ours.</p>
-</section>
+</div></section>
 
-<section id="results">
+<section id="results" class="section band"><div class="page">
 <h2>Results</h2>
 <div class="gallery-head"><div id="galleryFilters" class="toggle-group" role="group" aria-label="Filter results"><button data-filter="all" aria-pressed="true">All</button><button data-filter="joint" aria-pressed="false">Moving camera</button><button data-filter="fixed" aria-pressed="false">Fixed camera</button></div><span id="galleryCount">13 examples</span></div>
 <div id="galleryGrid" class="gallery-grid"></div>
-</section>
+</div></section>
 
-<section id="limitations">
+<section id="limitations" class="section"><div class="page narrow">
 <h2>Limitations</h2>
 <p>A single view gives incomplete geometry. Errors in monocular depth and surfaces hidden in the input image can cause geometric inconsistencies, especially under large viewpoint changes, reflections, and thin structures.</p>
 <p>Handles move as locally rigid groups. They suit local motion better than tearing, fracture, or fluids, and fine deformation may need many handles, which adds authoring work.</p>
 <p>Independent trajectories do not enforce physical or causal constraints. The XYZ maps also use a fixed first-frame normalization range, which large edits can exceed.</p>
-</section>
+</div></section>
 
-<section id="bibtex">
+<section id="bibtex" class="section band"><div class="page narrow">
 <h2>BibTeX</h2>
 <pre class="bibtex">@misc{zhang2026generativecinematographer,
   title  = {Generative Cinematographer: Composing Camera and Object Motion in 3D},
@@ -205,9 +208,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
             and Nguyen, Trong-Tung and Yuille, Alan and Bhattad, Anand},
   year   = {2026}
 }</pre>
-</section>
+</div></section>
 </main>
-<footer class="page">Last updated September 2026.</footer>
+<footer>Last updated September 2026.</footer>
 <dialog id="mediaDialog" aria-labelledby="modalTitle"><div class="modal-head"><h2 id="modalTitle">Video</h2><button id="closeDialog" aria-label="Close">×</button></div><div id="modalContent" class="modal-content"></div></dialog>
 <noscript><div class="page" style="padding:20px 0">Enable JavaScript to play the videos and use the interactive figure. The abstract, figures, and paper PDF are available without it.</div></noscript>
 <script>
