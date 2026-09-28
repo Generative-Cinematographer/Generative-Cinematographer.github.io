@@ -64,9 +64,10 @@ for(let x=-3;x<=3;x++)line([x,0,-2],[x,0,4],'#e3e6ea');for(let z=-2;z<=4;z++)lin
 for(const p of bg){const q=iso(p);w.fillStyle='#8a9099';w.globalAlpha=p[1]===0?.45:.65;w.beginPath();w.arc(...q,1.5,0,Math.PI*2);w.fill();}w.globalAlpha=1;
 line([-1.65,.82,1.55],[1.65,1.18,2.45],'#3b8ca4',1.7,[4,4]);line([handle[0],0,handle[2]],handle,'#81a8b1',1,[3,3]);
 for(let x=-2;x<=2;x++)for(let y=-2;y<=2;y++)for(let z=-1;z<=1;z++){const p=[handle[0]+x*.075,handle[1]+y*.075,handle[2]+z*.08],q=iso(p);w.fillStyle='#3b8ca4';w.globalAlpha=.5+((x+y+z+5)%3)*.18;w.beginPath();w.arc(...q,2,0,Math.PI*2);w.fill();}w.globalAlpha=1;
-const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='13px -apple-system, sans-serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
+const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='13px "CMU Sans Serif", -apple-system, sans-serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
 const cp=iso(camera);line(camera,[0,.75,2],'#c8793d',1,[4,5]);w.fillStyle='#fff7eb';w.strokeStyle='#c8793d';w.lineWidth=1.7;w.beginPath();w.roundRect(cp[0]-11,cp[1]-7,22,14,3);w.fill();w.stroke();w.beginPath();w.moveTo(cp[0]+11,cp[1]-4);w.lineTo(cp[0]+18,cp[1]-8);w.lineTo(cp[0]+18,cp[1]+8);w.lineTo(cp[0]+11,cp[1]+4);w.closePath();w.fill();w.stroke();w.fillStyle='#a36334';w.fillText('Camera',cp[0]-19,cp[1]+25);
-w.fillStyle='#6b7178';w.font='12px -apple-system, sans-serif';w.fillText('Static scene',273,95);
+w.fillStyle='#6b7178';w.font='12px "CMU Sans Serif", -apple-system, sans-serif';w.fillText('Static scene',273,95);
 $('labNote').textContent=u!==0?'The handle moved in world space: its XYZ color changed, while Handle 1 kept the same identity color. Both foreground maps follow the same projection.':orbit!==0?'The camera moved: the projected locations changed, while the world XYZ and identity colors stayed fixed.':'Try the camera slider: projections move, but the world-coordinate colors stay the same.';
 }
 $('cameraRange').addEventListener('input',drawLab);$('objectRange').addEventListener('input',drawLab);$('resetLab').addEventListener('click',()=>{$('cameraRange').value=0;$('objectRange').value=0;drawLab();});drawLab();refreshPlayback();
+document.fonts?.ready.then(drawLab);
