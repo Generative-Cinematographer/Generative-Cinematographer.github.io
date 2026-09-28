@@ -3,18 +3,14 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-LNnQYoZ0TqCvXOBdiNLyyA3AZ8Jfjl+JqDP2Xvju0Yw=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-mZdF0A3z0Zk+a2ebUEQgW3+nh4Y+fYN8K2m14o0zCF4=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
 <meta name="theme-color" content="#ffffff">
 <title>Generative Cinematographer: Composing Camera and Object Motion in 3D</title>
 <meta name="description" content="Generative Cinematographer lifts a single image into a 3D scene where camera paths and local object motion are authored together, then conditions a video diffusion model on world-space correspondence maps.">
 <meta property="og:title" content="Generative Cinematographer"><meta property="og:description" content="Composing Camera and Object Motion in 3D"><meta property="og:type" content="website">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
-@font-face{font-family:'CMU Sans Serif';src:url(assets/fonts/cmunss.woff) format('woff');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'CMU Sans Serif';src:url(assets/fonts/cmunsx.woff) format('woff');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'CMU Sans Serif';src:url(assets/fonts/cmunsi.woff) format('woff');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'CMU Sans Serif';src:url(assets/fonts/cmunso.woff) format('woff');font-weight:700;font-style:italic;font-display:swap}
-:root{--ink:#222629;--muted:#5a6068;--line:#dde0e4;--soft:#f5f6f8;--band:#f7f8fa;--link:#1f5fa8;--dark:#2b2f33;--sans:'CMU Sans Serif',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;--serif:Georgia,'Times New Roman',serif}
+:root{--ink:#222629;--muted:#5a6068;--line:#dde0e4;--soft:#f5f6f8;--band:#f7f8fa;--link:#1f5fa8;--dark:#2b2f33;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;--serif:Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:#fff;color:var(--ink);font:18px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
@@ -30,7 +26,7 @@ img,video,canvas{max-width:100%;display:block}
 .hero{padding:60px 0 48px;text-align:center}
 h1{font-size:clamp(31px,3.9vw,45px);line-height:1.2;font-weight:700;margin:0 auto 18px;max-width:900px;letter-spacing:-.015em}
 .authors{font-size:clamp(16px,1.53vw,19px);font-style:italic;margin:0 0 6px;line-height:1.7}
-@media(min-width:900px){.authors{white-space:nowrap}}
+@media(min-width:1000px){.authors{white-space:nowrap}}
 .authors span{white-space:nowrap}
 .authors sup,.affil sup{font-style:normal;font-size:.62em;margin-left:1px}
 .affil{font-size:17px;color:var(--muted);margin:0}
@@ -286,9 +282,9 @@ for(let x=-3;x<=3;x++)line([x,0,-2],[x,0,4],'#e3e6ea');for(let z=-2;z<=4;z++)lin
 for(const p of bg){const q=iso(p);w.fillStyle='#8a9099';w.globalAlpha=p[1]===0?.45:.65;w.beginPath();w.arc(...q,1.5,0,Math.PI*2);w.fill();}w.globalAlpha=1;
 line([-1.65,.82,1.55],[1.65,1.18,2.45],'#3b8ca4',1.7,[4,4]);line([handle[0],0,handle[2]],handle,'#81a8b1',1,[3,3]);
 for(let x=-2;x<=2;x++)for(let y=-2;y<=2;y++)for(let z=-1;z<=1;z++){const p=[handle[0]+x*.075,handle[1]+y*.075,handle[2]+z*.08],q=iso(p);w.fillStyle='#3b8ca4';w.globalAlpha=.5+((x+y+z+5)%3)*.18;w.beginPath();w.arc(...q,2,0,Math.PI*2);w.fill();}w.globalAlpha=1;
-const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='14px "CMU Sans Serif", -apple-system, sans-serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
+const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='14px -apple-system, sans-serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
 const cp=iso(camera);line(camera,[0,.75,2],'#c8793d',1,[4,5]);w.fillStyle='#fff7eb';w.strokeStyle='#c8793d';w.lineWidth=1.7;w.beginPath();w.roundRect(cp[0]-11,cp[1]-7,22,14,3);w.fill();w.stroke();w.beginPath();w.moveTo(cp[0]+11,cp[1]-4);w.lineTo(cp[0]+18,cp[1]-8);w.lineTo(cp[0]+18,cp[1]+8);w.lineTo(cp[0]+11,cp[1]+4);w.closePath();w.fill();w.stroke();w.fillStyle='#a36334';w.fillText('Camera',cp[0]-19,cp[1]+25);
-w.fillStyle='#6b7178';w.font='13px "CMU Sans Serif", -apple-system, sans-serif';w.fillText('Static scene',273,95);
+w.fillStyle='#6b7178';w.font='13px -apple-system, sans-serif';w.fillText('Static scene',273,95);
 $('labNote').textContent=u!==0?'The handle moved in world space: its XYZ color changed, while Handle 1 kept the same identity color. Both foreground maps follow the same projection.':orbit!==0?'The camera moved: the projected locations changed, while the world XYZ and identity colors stayed fixed.':'Try the camera slider: projections move, but the world-coordinate colors stay the same.';
 }
 $('cameraRange').addEventListener('input',drawLab);$('objectRange').addEventListener('input',drawLab);$('resetLab').addEventListener('click',()=>{$('cameraRange').value=0;$('objectRange').value=0;drawLab();});drawLab();refreshPlayback();
