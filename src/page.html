@@ -44,7 +44,7 @@ h2{font-size:32px;line-height:1.3;font-weight:700;color:var(--head);margin:0 0 3
 .section h2::after{content:'';display:block;width:44px;height:2px;background:var(--title);margin:12px auto 0}
 h3{font-size:18px;font-weight:700;color:var(--label);margin:0 0 4px}
 p{margin:0 0 16px}
-.abstract p{text-align:justify;hyphens:auto}
+.tldr{font-size:22px;line-height:1.55;text-align:center;color:var(--label);margin:0}
 figure{margin:0}
 figcaption,.caption{font-size:17px;color:var(--muted);line-height:1.55}
 .picker{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin:0 0 16px;font-size:17px}
@@ -112,7 +112,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 @media(max-width:1000px) and (min-width:761px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-<body id="top"><a class="skip" href="#abstract">Skip to content</a>
+<body id="top"><a class="skip" href="#tldr">Skip to content</a>
 <main>
 <header class="hero"><div class="page hero-inner">
 <h1>Generative Cinematographer: Composing Camera and Object Motion in 3D</h1>
@@ -132,9 +132,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </div>
 </div></header>
 
-<section id="abstract" class="section"><div class="page narrow">
-<h2>Abstract</h2>
-<p>Most controllable video generators take 2D controls such as trajectories or drags. These are ambiguous: the same image-plane motion can come from different 3D motions, so camera and object motion are hard to separate. Generative Cinematographer lifts an image or video into an editable 4D scene, where the camera path and local object motion are authored together in one world frame. We rasterize this motion into dense correspondence maps that keep each point's identity across viewpoints and remain compatible with RGB-pretrained video diffusion models. Sparse 3D motion handles approximate non-rigid motion without physics simulators or category-specific priors, and a frozen Wan backbone is conditioned through lightweight adapters. Experiments show coherent camera-relative motion, better geometric consistency under viewpoint changes, and strong controllability across diverse real-world scenes.</p>
+<section id="tldr" class="section"><div class="page narrow">
+<h2>TL;DR</h2>
+<p class="tldr">Author the camera path and object motion together in a 3D scene lifted from a single image, and a video diffusion model turns them into a coherent shot.</p>
 </div></section>
 
 <section id="contributions" class="section band"><div class="page narrow">
@@ -218,7 +218,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </main>
 <footer>Last updated September 2026.</footer>
 <dialog id="mediaDialog" aria-labelledby="modalTitle"><div class="modal-head"><h2 id="modalTitle">Video</h2><button id="closeDialog" aria-label="Close">×</button></div><div id="modalContent" class="modal-content"></div></dialog>
-<noscript><div class="page" style="padding:20px 0">Enable JavaScript to play the videos and use the interactive figure. The abstract, figures, and paper PDF are available without it.</div></noscript>
+<noscript><div class="page" style="padding:20px 0">Enable JavaScript to play the videos and use the interactive figure. The summary, figures, and paper PDF are available without it.</div></noscript>
 <script>
 const DATA=__DATA__;
 __JS__
