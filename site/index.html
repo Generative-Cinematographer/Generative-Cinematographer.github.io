@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-LPEhGZZoVfOKLv13it28VLxzdTrt0pIiHXI0Ke1ECUk=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-z+ku5BOEjWVbZLnXFBS3bQBwRh7z/on056Rwi+EkjoE=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
 <meta name="theme-color" content="#ffffff">
 <title>Generative Cinematographer: Composing Camera and Object Motion in 3D</title>
 <meta name="description" content="Generative Cinematographer lifts a single image into a 3D scene where camera paths and local object motion are authored together, then conditions a video diffusion model on world-space correspondence maps.">
@@ -128,41 +128,41 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <figure class="panel"><figcaption class="panel-label">Generated video</figcaption><div class="visual"><video id="heroResult" muted loop playsinline preload="metadata" aria-label="Generated video"></video><button class="enlarge" data-enlarge="heroResult" aria-label="Enlarge generated video">⤢</button></div></figure>
 </div>
 <div class="teaser-foot"><p class="caption" id="heroCaption"></p><button class="small-button" id="globalPlay" aria-pressed="true">Pause videos</button></div>
-<p class="caption" style="margin-top:8px">From a single image, the camera path and the motion of selected foreground regions are authored in one 3D scene. Orange marks camera poses and paths; other colors mark foreground trajectories.</p>
+<p class="caption" style="margin-top:8px">Camera and object motion are authored together in 3D from a single image. Orange: camera. Other colors: object paths.</p>
 </div>
 </div></header>
 
 <section id="abstract" class="section"><div class="page narrow">
 <h2>Abstract</h2>
-<p>Existing controllable video generation methods can model camera motion or object motion, but most operate through image-space controls such as 2D trajectories or sparse drag signals. These controls are fundamentally ambiguous: the same image-plane motion may correspond to multiple underlying 3D motions, making camera motion and object motion difficult to disentangle under viewpoint changes. We present Generative Cinematographer, a controllable video generation framework that lifts a monocular image or video into an editable 4D scene scaffold where camera motion and foreground motion are authored jointly in a shared world frame. Our key observation is that world-space motion can be rasterized into dense correspondence maps that preserve persistent identities across viewpoints while remaining compatible with RGB-pretrained video diffusion models. The resulting representation supports sparse local 3D motion handles, coordinated camera–object choreography, and piecewise-rigid approximations of non-rigid motion without requiring physics simulators or category-specific priors. To preserve the generative prior of a pretrained video model, we freeze a Wan-based diffusion backbone and condition it through lightweight adaptation layers driven by the proposed correspondence representation. Experiments demonstrate coherent camera-relative motion, improved geometric consistency under viewpoint changes, and strong controllability across diverse real-world scenes.</p>
+<p>Most controllable video generators take 2D controls such as trajectories or drags. These are ambiguous: the same image-plane motion can come from different 3D motions, so camera and object motion are hard to separate. Generative Cinematographer lifts an image or video into an editable 4D scene, where the camera path and local object motion are authored together in one world frame. We rasterize this motion into dense correspondence maps that keep each point's identity across viewpoints and remain compatible with RGB-pretrained video diffusion models. Sparse 3D motion handles approximate non-rigid motion without physics simulators or category-specific priors, and a frozen Wan backbone is conditioned through lightweight adapters. Experiments show coherent camera-relative motion, better geometric consistency under viewpoint changes, and strong controllability across diverse real-world scenes.</p>
 </div></section>
 
 <section id="contributions" class="section band"><div class="page narrow">
 <h2>Contributions</h2>
 <ol class="steps">
-<li>A dense correspondence-map representation that encodes point identity and position in a shared world coordinate system, as rasterized maps compatible with pretrained video VAEs.</li>
-<li>A local 3D motion-handle formulation that approximates non-rigid motion through independently controlled local rigid regions, without a simulator or a category-specific prior.</li>
-<li>A world-space authoring interface for joint control of camera trajectories and local object motion from a single image.</li>
+<li>Correspondence maps that encode each point's world position and identity as images a pretrained video VAE can read.</li>
+<li>Local 3D motion handles: independently moved rigid regions that approximate non-rigid motion, with no simulator or category prior.</li>
+<li>A world-space interface for authoring camera paths and object motion together from one image.</li>
 </ol>
 </div></section>
 
 <section id="method" class="section"><div class="page">
 <h2>Method</h2>
-<figure class="paper-figure"><button class="figure-button" data-image="assets/framework.png" data-title="Framework overview" aria-label="Enlarge the framework figure"><img src="assets/framework.png" alt="Framework: input RGB, estimated depth and mask, 3D motion authoring, correspondence maps, VAE, main and side diffusion branches, and generated video" loading="lazy" width="2200"></button><figcaption>Framework overview. Click the figure to enlarge it, or open the <a href="assets/framework.pdf?v=1460f1a9b84d" target="_blank" rel="noopener">vector PDF</a>.</figcaption></figure>
+<figure class="paper-figure"><button class="figure-button" data-image="assets/framework.png" data-title="Framework overview" aria-label="Enlarge the framework figure"><img src="assets/framework.png" alt="Framework: input RGB, estimated depth and mask, 3D motion authoring, correspondence maps, VAE, main and side diffusion branches, and generated video" loading="lazy" width="2200"></button><figcaption>Framework overview. Click to enlarge, or open the <a href="assets/framework.pdf?v=1460f1a9b84d" target="_blank" rel="noopener">PDF</a>.</figcaption></figure>
 <ol class="steps">
-<li>We estimate depth and a dynamic mask for the input image and back-project its pixels into a colored point cloud, using the first camera as the world frame.</li>
-<li>The artist selects local foreground regions as motion handles in a 3D tool such as Blender, then authors their trajectories and the camera path.</li>
-<li>For every frame we project the static background and the moved handles into three maps: background XYZ, foreground XYZ, and foreground identity, each with a validity mask.</li>
-<li>A frozen Wan VAE encodes the maps. A trainable side branch, convolutional projections between branches, and LoRA adapters in the main branch condition the frozen diffusion model on them.</li>
+<li>Lift the image into a colored point cloud using estimated depth and a dynamic mask.</li>
+<li>Select foreground regions as motion handles in a 3D tool such as Blender, then author their paths and the camera path.</li>
+<li>Render each frame into three maps: background XYZ, foreground XYZ, and foreground identity.</li>
+<li>Encode the maps with the frozen Wan VAE, and condition the frozen diffusion model through a side branch and LoRA adapters.</li>
 </ol>
-<p>Only the side branch, the cross-branch projections, and the LoRA adapters are trained. The side branch runs at half the spatial resolution of the main branch and adds its features to the main branch through residual connections.</p>
+<p>Only the side branch, its projections, and the LoRA adapters are trained. The side branch runs at half resolution and feeds the main branch through residual connections.</p>
 </div></section>
 
 <section id="representation" class="section band"><div class="page">
 <h2>Correspondence maps</h2>
-<p>Both XYZ maps are normalized once, using the bounding-box center <em>o</em> and half-range <em>σ</em> of the first-frame scene. The normalized X, Y, and Z coordinates are stored as red, green, and blue, with the same normalization in every frame:</p>
+<p>Each XYZ map stores a point's world position as RGB, normalized by the first-frame bounding box (center <em>o</em>, half-range <em>σ</em>) in every frame:</p>
 <div class="formula">RGB = ½ [(p − o) / σ + 1]</div>
-<p>A pixel's location in the map tells the model where a point appears in the image, and its color tells the model where that point is in the world. A moving point changes its XYZ color, so a separate identity map gives each handle a fixed color across frames and viewpoints.</p>
+<p>A pixel's position shows where a point appears; its color shows where it is in the world. Moving points change color, so an identity map gives each handle a fixed color.</p>
 <div class="lab">
 <div class="lab-controls"><label for="cameraRange">Camera orbit: <output id="cameraValue">0°</output><input id="cameraRange" type="range" min="-40" max="40" value="0" step="1"></label><label for="objectRange">Handle position: <output id="objectValue">0.00</output><input id="objectRange" type="range" min="-100" max="100" value="0" step="1"></label><button id="resetLab" class="small-button">Reset</button></div>
 <div class="lab-body">
@@ -171,17 +171,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <div class="map-card"><canvas id="bgCanvas" width="440" height="340" role="img" aria-label="Background XYZ map"></canvas><h3>Background XYZ</h3><p>Static points keep the same colors in every view.</p><div class="swatch-row"><span class="swatch" style="background:#80bfaa"></span>World reference</div></div>
 <div class="map-card"><canvas id="fgCanvas" width="440" height="340" role="img" aria-label="Foreground XYZ map"></canvas><h3>Foreground XYZ</h3><p>The color changes when the handle moves.</p><div class="swatch-row"><span id="xyzSwatch" class="swatch"></span><span id="xyzValue">RGB</span></div></div>
 <div class="map-card"><canvas id="idCanvas" width="440" height="340" role="img" aria-label="Foreground identity map"></canvas><h3>Foreground identity</h3><p>A fixed color that labels the handle.</p><div class="swatch-row"><span class="swatch" style="background:rgb(83,183,201)"></span>Handle 1</div></div>
-<p id="labNote" class="lab-note" aria-live="polite">Try the camera slider: projections move, but the world-coordinate colors stay the same.</p>
+<p id="labNote" class="lab-note" aria-live="polite">Move the camera: points shift in the image, but their colors stay the same.</p>
 </div>
 </div>
-<p class="lab-footer">A schematic with one handle and sparse background points; no model is run. Both foreground maps share the same projected footprint. The identity map uses a fixed base color weighted by a Gaussian footprint, and invalid pixels are zero.</p>
+<p class="lab-footer">Schematic only; no model is run.</p>
 </div>
-<figure class="paper-figure"><button class="figure-button" data-image="assets/correspondence-cropped.png" data-title="World-space correspondence across viewpoints" aria-label="Enlarge correspondence figure"><img src="assets/correspondence-cropped.png" loading="lazy" width="2468" height="817" alt="Static colored points and a moving bus seen from three viewpoints"></button><figcaption>Background points keep their world-coordinate colors across three viewpoints, while the moving bus changes position. <a href="assets/correspondence.pdf?v=8115edc5b9da" target="_blank" rel="noopener">Vector PDF</a>.</figcaption></figure>
+<figure class="paper-figure"><button class="figure-button" data-image="assets/correspondence-cropped.png" data-title="World-space correspondence across viewpoints" aria-label="Enlarge correspondence figure"><img src="assets/correspondence-cropped.png" loading="lazy" width="2468" height="817" alt="Static colored points and a moving bus seen from three viewpoints"></button><figcaption>Background points keep their colors across viewpoints while the bus moves. <a href="assets/correspondence.pdf?v=8115edc5b9da" target="_blank" rel="noopener">PDF</a>.</figcaption></figure>
 </div></section>
 
 <section id="compare" class="section"><div class="page">
 <h2>Comparisons</h2>
-<p>Select a scene and a baseline. The left panel shows the control input; the videos can be restarted together.</p>
+<p>Pick a scene and a baseline. The left panel shows the control input.</p>
 <div class="compare-settings"><label for="caseSelect">Scene<select id="caseSelect"></select></label><label for="modelSelect">Baseline<select id="modelSelect"></select></label><button class="small-button" id="replayCompare">Restart videos</button></div>
 <p id="compareInstruction" class="compare-instruction"></p>
 <div class="comparison-grid">
@@ -189,8 +189,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <figure class="panel"><figcaption class="panel-label">Ours</figcaption><div class="visual"><video id="compareOurs" muted loop playsinline preload="none" aria-label="Our result"></video><button class="enlarge" data-enlarge="compareOurs" aria-label="Enlarge our result">⤢</button></div></figure>
 <figure class="panel"><figcaption id="baselineLabel" class="panel-label"></figcaption><div class="visual"><video id="compareBaseline" muted loop playsinline preload="none" aria-label="Baseline result"></video><button class="enlarge" data-enlarge="compareBaseline" aria-label="Enlarge baseline result">⤢</button></div></figure>
 </div>
-<div class="compare-bottom"><div class="toggle-group" id="controlModes" role="group" aria-label="Control view"><button data-control="camera" aria-pressed="true">Camera overview</button><button data-control="scene" aria-pressed="false">Scene detail</button><button data-control="input" aria-pressed="false">Input image</button><button data-control="annotation" aria-pressed="false">2D control</button></div><p>Orange: camera. Other colors: foreground motion.</p></div>
-<p class="media-note">All examples are authored by hand. The baselines take different kinds of control input, so their conditioning is not identical to ours.</p>
+<div class="compare-bottom"><div class="toggle-group" id="controlModes" role="group" aria-label="Control view"><button data-control="camera" aria-pressed="true">Camera overview</button><button data-control="scene" aria-pressed="false">Scene detail</button><button data-control="input" aria-pressed="false">Input image</button><button data-control="annotation" aria-pressed="false">2D control</button></div><p>Orange: camera. Other colors: object paths.</p></div>
+<p class="media-note">All examples are hand-authored. Baselines use different control inputs.</p>
 </div></section>
 
 <section id="results" class="section band"><div class="page">
@@ -201,9 +201,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
 <section id="limitations" class="section"><div class="page narrow">
 <h2>Limitations</h2>
-<p>A single view gives incomplete geometry. Errors in monocular depth and surfaces hidden in the input image can cause geometric inconsistencies, especially under large viewpoint changes, reflections, and thin structures.</p>
-<p>Handles move as locally rigid groups. They suit local motion better than tearing, fracture, or fluids, and fine deformation may need many handles, which adds authoring work.</p>
-<p>Independent trajectories do not enforce physical or causal constraints. The XYZ maps also use a fixed first-frame normalization range, which large edits can exceed.</p>
+<p>Single-view geometry is incomplete. Depth errors and hidden surfaces can cause artifacts under large viewpoint changes.</p>
+<p>Handles are locally rigid. Tearing, fracture, and fluids are out of scope, and fine deformation needs many handles.</p>
+<p>Trajectories are not physically constrained, and large edits can exceed the first-frame XYZ range.</p>
 </div></section>
 
 <section id="bibtex" class="section band"><div class="page narrow">
@@ -228,6 +228,7 @@ const motionReduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let playing=!motionReduced,modalOpen=false;
 const labels=['Bus, turning','Hiker','Hoverboard, sweeping path','Hoverboard, turning','Goldfish','Bike-packing','Bus, moving forward','Sea turtle','Hoverboard, fixed camera','Living room, moving camera','Living room, fixed camera','Garden vase, moving camera','Garden vase, fixed camera','Girl and dog, moving camera','Girl and dog, fixed camera','Robotic arm pushing a box'];
 const isFixed=c=>c.instruction.includes('Keep the camera viewpoint fixed');
+const brief=c=>c.instruction.replace(' along the highlighted control paths.','.').replace('Follow the camera movement shown in the 3D view.','Moving camera.').replace('Keep the camera viewpoint fixed.','Fixed camera.');
 const videoObserver=new IntersectionObserver(entries=>{for(const e of entries){e.target.dataset.visible=e.isIntersecting?'yes':'no';if(e.isIntersecting)ensureLoaded(e.target);updateVideo(e.target);}},{threshold:0.12});
 function ensureLoaded(v){if(v.dataset.src&&v.getAttribute('src')!==v.dataset.src){v.src=v.dataset.src;v.load();}}
 function updateVideo(v){if(playing&&!modalOpen&&!document.hidden&&v.dataset.visible==='yes'&&!v.hidden){ensureLoaded(v);if(v.currentSrc||v.getAttribute('src'))v.play().catch(e=>{if(e.name!=='AbortError')v.controls=true;});}else v.pause();}
@@ -238,7 +239,7 @@ function setPressed(parent,attribute,value){parent.querySelectorAll('button').fo
 $('globalPlay').addEventListener('click',()=>{playing=!playing;refreshPlayback();});
 document.addEventListener('visibilitychange',refreshPlayback);
 const featured=[{i:2,label:'Hoverboard'},{i:7,label:'Sea turtle'},{i:9,label:'Living room'},{i:11,label:'Garden vase'},{i:13,label:'Girl and dog'}];
-function setHero(i){const c=DATA.cases[i];$('heroInput').src=c.inputData;$('heroInput').alt=labels[i]+' input image';bindVideo($('heroControl'),c.scene);bindVideo($('heroResult'),c.models.find(x=>x.key==='ours'));$('heroCaption').textContent=labels[i]+'. '+c.instruction;setPressed($('heroTabs'),'data-case',i);}
+function setHero(i){const c=DATA.cases[i];$('heroInput').src=c.inputData;$('heroInput').alt=labels[i]+' input image';bindVideo($('heroControl'),c.scene);bindVideo($('heroResult'),c.models.find(x=>x.key==='ours'));$('heroCaption').textContent=brief(c);setPressed($('heroTabs'),'data-case',i);}
 $('heroTabs').innerHTML=featured.map(x=>`<button type="button" data-case="${x.i}" aria-pressed="false" aria-controls="heroPreview">${x.label}</button>`).join('');
 $('heroTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setHero(+b.dataset.case);});
 ['heroControl','heroResult','compareControl','compareOurs','compareBaseline'].forEach(id=>watchVideo($(id)));
@@ -254,7 +255,7 @@ $('caseSelect').innerHTML=DATA.cases.map((c,i)=>`<option value="${i}">${esc(labe
 $('modelSelect').innerHTML=Object.entries(DATA.models).filter(([k])=>k!=='ours').map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
 let controlMode='camera';
 function setControl(){const c=DATA.cases[+$('caseSelect').value];const image=controlMode==='input'||controlMode==='annotation';$('compareControl').hidden=image;$('compareImage').hidden=!image;if(image){$('compareControl').pause();$('compareImage').src=controlMode==='input'?c.inputData:c.annotationData;$('compareImage').alt=labels[+$('caseSelect').value]+(controlMode==='input'?' original image':' projected 2D control');}else bindVideo($('compareControl'),c[controlMode]);$('compareControlLabel').textContent={camera:'Camera overview',scene:'Scene detail',input:'Input image',annotation:'2D control'}[controlMode];setPressed($('controlModes'),'data-control',controlMode);}
-function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=c.instruction;bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
+function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=brief(c);bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
 $('caseSelect').addEventListener('change',setComparison);$('modelSelect').addEventListener('change',setComparison);
 $('controlModes').addEventListener('click',e=>{const b=e.target.closest('button');if(b){controlMode=b.dataset.control;setControl();}});
 setComparison();
@@ -290,7 +291,7 @@ for(let x=-2;x<=2;x++)for(let y=-2;y<=2;y++)for(let z=-1;z<=1;z++){const p=[hand
 const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='15px "Times New Roman", Times, serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
 const cp=iso(camera);line(camera,[0,.75,2],'#c8793d',1,[4,5]);w.fillStyle='#fff7eb';w.strokeStyle='#c8793d';w.lineWidth=1.7;w.beginPath();w.roundRect(cp[0]-11,cp[1]-7,22,14,3);w.fill();w.stroke();w.beginPath();w.moveTo(cp[0]+11,cp[1]-4);w.lineTo(cp[0]+18,cp[1]-8);w.lineTo(cp[0]+18,cp[1]+8);w.lineTo(cp[0]+11,cp[1]+4);w.closePath();w.fill();w.stroke();w.fillStyle='#a36334';w.fillText('Camera',cp[0]-19,cp[1]+25);
 w.fillStyle='#6b7178';w.font='14px "Times New Roman", Times, serif';w.fillText('Static scene',273,95);
-$('labNote').textContent=u!==0?'The handle moved in world space: its XYZ color changed, while Handle 1 kept the same identity color. Both foreground maps follow the same projection.':orbit!==0?'The camera moved: the projected locations changed, while the world XYZ and identity colors stayed fixed.':'Try the camera slider: projections move, but the world-coordinate colors stay the same.';
+$('labNote').textContent=u!==0?'The handle moved: its XYZ color changed, but its identity color did not.':orbit!==0?'The camera moved: points shifted in the image, but their colors did not change.':'Move the camera: points shift in the image, but their colors stay the same.';
 }
 $('cameraRange').addEventListener('input',drawLab);$('objectRange').addEventListener('input',drawLab);$('resetLab').addEventListener('click',()=>{$('cameraRange').value=0;$('objectRange').value=0;drawLab();});drawLab();refreshPlayback();
 document.fonts?.ready.then(drawLab);

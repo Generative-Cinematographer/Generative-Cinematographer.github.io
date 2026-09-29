@@ -5,6 +5,7 @@ const motionReduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let playing=!motionReduced,modalOpen=false;
 const labels=['Bus, turning','Hiker','Hoverboard, sweeping path','Hoverboard, turning','Goldfish','Bike-packing','Bus, moving forward','Sea turtle','Hoverboard, fixed camera','Living room, moving camera','Living room, fixed camera','Garden vase, moving camera','Garden vase, fixed camera','Girl and dog, moving camera','Girl and dog, fixed camera','Robotic arm pushing a box'];
 const isFixed=c=>c.instruction.includes('Keep the camera viewpoint fixed');
+const brief=c=>c.instruction.replace(' along the highlighted control paths.','.').replace('Follow the camera movement shown in the 3D view.','Moving camera.').replace('Keep the camera viewpoint fixed.','Fixed camera.');
 const videoObserver=new IntersectionObserver(entries=>{for(const e of entries){e.target.dataset.visible=e.isIntersecting?'yes':'no';if(e.isIntersecting)ensureLoaded(e.target);updateVideo(e.target);}},{threshold:0.12});
 function ensureLoaded(v){if(v.dataset.src&&v.getAttribute('src')!==v.dataset.src){v.src=v.dataset.src;v.load();}}
 function updateVideo(v){if(playing&&!modalOpen&&!document.hidden&&v.dataset.visible==='yes'&&!v.hidden){ensureLoaded(v);if(v.currentSrc||v.getAttribute('src'))v.play().catch(e=>{if(e.name!=='AbortError')v.controls=true;});}else v.pause();}
@@ -15,7 +16,7 @@ function setPressed(parent,attribute,value){parent.querySelectorAll('button').fo
 $('globalPlay').addEventListener('click',()=>{playing=!playing;refreshPlayback();});
 document.addEventListener('visibilitychange',refreshPlayback);
 const featured=[{i:2,label:'Hoverboard'},{i:7,label:'Sea turtle'},{i:9,label:'Living room'},{i:11,label:'Garden vase'},{i:13,label:'Girl and dog'}];
-function setHero(i){const c=DATA.cases[i];$('heroInput').src=c.inputData;$('heroInput').alt=labels[i]+' input image';bindVideo($('heroControl'),c.scene);bindVideo($('heroResult'),c.models.find(x=>x.key==='ours'));$('heroCaption').textContent=labels[i]+'. '+c.instruction;setPressed($('heroTabs'),'data-case',i);}
+function setHero(i){const c=DATA.cases[i];$('heroInput').src=c.inputData;$('heroInput').alt=labels[i]+' input image';bindVideo($('heroControl'),c.scene);bindVideo($('heroResult'),c.models.find(x=>x.key==='ours'));$('heroCaption').textContent=brief(c);setPressed($('heroTabs'),'data-case',i);}
 $('heroTabs').innerHTML=featured.map(x=>`<button type="button" data-case="${x.i}" aria-pressed="false" aria-controls="heroPreview">${x.label}</button>`).join('');
 $('heroTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setHero(+b.dataset.case);});
 ['heroControl','heroResult','compareControl','compareOurs','compareBaseline'].forEach(id=>watchVideo($(id)));
@@ -31,7 +32,7 @@ $('caseSelect').innerHTML=DATA.cases.map((c,i)=>`<option value="${i}">${esc(labe
 $('modelSelect').innerHTML=Object.entries(DATA.models).filter(([k])=>k!=='ours').map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
 let controlMode='camera';
 function setControl(){const c=DATA.cases[+$('caseSelect').value];const image=controlMode==='input'||controlMode==='annotation';$('compareControl').hidden=image;$('compareImage').hidden=!image;if(image){$('compareControl').pause();$('compareImage').src=controlMode==='input'?c.inputData:c.annotationData;$('compareImage').alt=labels[+$('caseSelect').value]+(controlMode==='input'?' original image':' projected 2D control');}else bindVideo($('compareControl'),c[controlMode]);$('compareControlLabel').textContent={camera:'Camera overview',scene:'Scene detail',input:'Input image',annotation:'2D control'}[controlMode];setPressed($('controlModes'),'data-control',controlMode);}
-function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=c.instruction;bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
+function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=brief(c);bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
 $('caseSelect').addEventListener('change',setComparison);$('modelSelect').addEventListener('change',setComparison);
 $('controlModes').addEventListener('click',e=>{const b=e.target.closest('button');if(b){controlMode=b.dataset.control;setControl();}});
 setComparison();
@@ -67,7 +68,7 @@ for(let x=-2;x<=2;x++)for(let y=-2;y<=2;y++)for(let z=-1;z<=1;z++){const p=[hand
 const hp=iso(handle);w.strokeStyle='#39869a';w.lineWidth=1.2;w.beginPath();w.arc(...hp,16,0,Math.PI*2);w.stroke();w.font='15px "Times New Roman", Times, serif';w.fillStyle='#34768b';w.fillText('Handle 1',hp[0]-20,hp[1]-24);
 const cp=iso(camera);line(camera,[0,.75,2],'#c8793d',1,[4,5]);w.fillStyle='#fff7eb';w.strokeStyle='#c8793d';w.lineWidth=1.7;w.beginPath();w.roundRect(cp[0]-11,cp[1]-7,22,14,3);w.fill();w.stroke();w.beginPath();w.moveTo(cp[0]+11,cp[1]-4);w.lineTo(cp[0]+18,cp[1]-8);w.lineTo(cp[0]+18,cp[1]+8);w.lineTo(cp[0]+11,cp[1]+4);w.closePath();w.fill();w.stroke();w.fillStyle='#a36334';w.fillText('Camera',cp[0]-19,cp[1]+25);
 w.fillStyle='#6b7178';w.font='14px "Times New Roman", Times, serif';w.fillText('Static scene',273,95);
-$('labNote').textContent=u!==0?'The handle moved in world space: its XYZ color changed, while Handle 1 kept the same identity color. Both foreground maps follow the same projection.':orbit!==0?'The camera moved: the projected locations changed, while the world XYZ and identity colors stayed fixed.':'Try the camera slider: projections move, but the world-coordinate colors stay the same.';
+$('labNote').textContent=u!==0?'The handle moved: its XYZ color changed, but its identity color did not.':orbit!==0?'The camera moved: points shifted in the image, but their colors did not change.':'Move the camera: points shift in the image, but their colors stay the same.';
 }
 $('cameraRange').addEventListener('input',drawLab);$('objectRange').addEventListener('input',drawLab);$('resetLab').addEventListener('click',()=>{$('cameraRange').value=0;$('objectRange').value=0;drawLab();});drawLab();refreshPlayback();
 document.fonts?.ready.then(drawLab);
