@@ -37,6 +37,7 @@ function setControl(){const c=DATA.cases[+$('caseSelect').value];const image=con
 function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=brief(c);bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
 $('caseSelect').addEventListener('change',setComparison);$('modelSelect').addEventListener('change',setComparison);
 $('controlModes').addEventListener('click',e=>{const b=e.target.closest('button');if(b){controlMode=b.dataset.control;setControl();}});
+$('caseSelect').value=String(labels.indexOf('Hoverboard, turning'));
 setComparison();
 $('replayCompare').addEventListener('click',async()=>{const vs=[$('compareControl'),$('compareOurs'),$('compareBaseline')].filter(v=>!v.hidden);vs.forEach(v=>{v.pause();ensureLoaded(v);});await Promise.all(vs.map(v=>v.readyState>=2?Promise.resolve():new Promise(resolve=>{v.addEventListener('loadeddata',resolve,{once:true});setTimeout(resolve,6000);})));playing=true;vs.forEach(v=>{v.currentTime=0;v.dataset.visible='yes';});refreshPlayback();});
 $('compareOurs').addEventListener('timeupdate',()=>{const a=$('compareOurs');if(!a.paused)for(const b of [$('compareControl'),$('compareBaseline')])if(!b.hidden&&!b.paused&&b.readyState>=2&&Math.abs(a.currentTime-b.currentTime)>.2)b.currentTime=a.currentTime;});

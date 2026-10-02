@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-wQqQ6OEkqXxJpOZHiZxJgBtDC1rczMNRhj9HMXMGdlI=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;sha256-a2+kHSh369qGo/jApPhyJXjFn0oa5Tv0Xa4bLFuPY00=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27;; media-src &#x27;self&#x27;; font-src &#x27;self&#x27;; connect-src &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; worker-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
 <meta name="theme-color" content="#ffffff">
 <title>Generative Cinematographer: Composing Camera and Object Motion in 3D</title>
 <meta name="description" content="Generative Cinematographer lifts a single image into a 3D scene where camera paths and local object motion are authored together, then conditions a video diffusion model on world-space correspondence maps.">
@@ -265,6 +265,7 @@ function setControl(){const c=DATA.cases[+$('caseSelect').value];const image=con
 function setComparison(){const c=DATA.cases[+$('caseSelect').value];const model=c.models.find(x=>x.key===$('modelSelect').value);$('compareInstruction').textContent=brief(c);bindVideo($('compareOurs'),c.models.find(x=>x.key==='ours'));bindVideo($('compareBaseline'),model);$('baselineLabel').textContent=model.label;setControl();}
 $('caseSelect').addEventListener('change',setComparison);$('modelSelect').addEventListener('change',setComparison);
 $('controlModes').addEventListener('click',e=>{const b=e.target.closest('button');if(b){controlMode=b.dataset.control;setControl();}});
+$('caseSelect').value=String(labels.indexOf('Hoverboard, turning'));
 setComparison();
 $('replayCompare').addEventListener('click',async()=>{const vs=[$('compareControl'),$('compareOurs'),$('compareBaseline')].filter(v=>!v.hidden);vs.forEach(v=>{v.pause();ensureLoaded(v);});await Promise.all(vs.map(v=>v.readyState>=2?Promise.resolve():new Promise(resolve=>{v.addEventListener('loadeddata',resolve,{once:true});setTimeout(resolve,6000);})));playing=true;vs.forEach(v=>{v.currentTime=0;v.dataset.visible='yes';});refreshPlayback();});
 $('compareOurs').addEventListener('timeupdate',()=>{const a=$('compareOurs');if(!a.paused)for(const b of [$('compareControl'),$('compareBaseline')])if(!b.hidden&&!b.paused&&b.readyState>=2&&Math.abs(a.currentTime-b.currentTime)>.2)b.currentTime=a.currentTime;});
