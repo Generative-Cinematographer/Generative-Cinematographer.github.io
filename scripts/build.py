@@ -35,6 +35,7 @@ class PageAssets(HTMLParser):
     def __init__(self):
         super().__init__()
         self.refs = []
+        self.author_links = []
         self.nav_paper = []
         self.meta = {}
 
@@ -44,6 +45,12 @@ class PageAssets(HTMLParser):
             self.meta[attrs.get("name", attrs.get("http-equiv"))] = attrs.get("content")
         if "nav-paper" in attrs.get("class", "").split():
             self.nav_paper.append((tag, attrs))
+        if tag == "a" and "author-link" in attrs.get("class", "").split():
+            href = attrs.get("href", "")
+            require(href.startswith("https://"), f"Author links must use HTTPS: {href}")
+            require(attrs.get("rel") == "noopener noreferrer", f"Author link needs rel=noopener noreferrer: {href}")
+            self.author_links.append(href)
+            return
         for key in ("href", "src", "poster", "data-image"):
             if attrs.get(key):
                 self.refs.append(attrs[key])
@@ -87,10 +94,14 @@ def render():
     )
     page = page.replace("__CSP__", html.escape(policy, quote=True))
     require(not re.search(r"__(?:META|DATA|METRICS|JS|CSP)__", page), "Unfilled template")
-    require(not re.search(r"https?://|s3://|/Users/|/home/|gh[pousr]_", page),
-            "Page contains an external URL, private path, or credential prefix")
     parsed = PageAssets()
     parsed.feed(page)
+    # Author homepage links are the only external URLs allowed on the page.
+    scanned = page
+    for href in parsed.author_links:
+        scanned = scanned.replace(f'href="{href}"', "")
+    require(not re.search(r"https?://|s3://|/Users/|/home/|gh[pousr]_", scanned),
+            "Page contains an external URL, private path, or credential prefix")
     require(parsed.meta.get("referrer") == "no-referrer", "Referrer policy missing")
     require(parsed.meta.get("Content-Security-Policy") == policy, "CSP mismatch")
     require(len(parsed.nav_paper) == 1, "Expected one header Paper button")

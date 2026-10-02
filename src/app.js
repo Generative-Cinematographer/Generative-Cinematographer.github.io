@@ -24,6 +24,8 @@ setHero(2);
 // Curate only section 05; retain original case indices for its Compare buttons.
 const excludedResultCases=new Set(["gardenvase_720_first6s_no_rendering__jaa50c602", "dogs-jump__jb413bdd9", "hike__j1a0b8606"]);
 const resultCases=DATA.cases.map((c,i)=>({c,i})).filter(({c})=>!excludedResultCases.has(c.id));
+// Lead the Results gallery with "Hoverboard, turning" instead of the bus.
+const firstResult=resultCases.findIndex(({i})=>labels[i]==='Hoverboard, turning');if(firstResult>0)resultCases.unshift(...resultCases.splice(firstResult,1));
 $('galleryCount').textContent=resultCases.length+' examples';
 $('galleryGrid').innerHTML=resultCases.map(({c,i})=>{const p=c.models.find(x=>x.key==='ours');return `<article class="gallery-card" data-camera="${isFixed(c)?'fixed':'joint'}"><div class="visual"><video id="galleryVideo${i}" muted loop playsinline preload="none" poster="${esc(p.posterData)}" data-src="${esc(p.videoData)}" data-title="${esc(labels[i])} (ours)" aria-label="${esc(labels[i])} generated video" width="${p.size[0]}" height="${p.size[1]}"></video><button class="enlarge" data-enlarge="galleryVideo${i}" aria-label="Enlarge ${esc(labels[i])}">⤢</button></div><div class="gallery-caption"><div><h3>${esc(labels[i])}</h3><p>${isFixed(c)?'Fixed camera':'Moving camera'}</p></div><button class="text-button" data-compare="${i}">Compare</button></div></article>`;}).join('');
 document.querySelectorAll('.gallery-card video').forEach(watchVideo);
