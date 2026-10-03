@@ -45,10 +45,11 @@ class PageAssets(HTMLParser):
             self.meta[attrs.get("name", attrs.get("http-equiv"))] = attrs.get("content")
         if "nav-paper" in attrs.get("class", "").split():
             self.nav_paper.append((tag, attrs))
-        if tag == "a" and "author-link" in attrs.get("class", "").split():
+        classes = attrs.get("class", "").split()
+        if tag == "a" and ("author-link" in classes or "nav-paper" in classes):
             href = attrs.get("href", "")
-            require(href.startswith("https://"), f"Author links must use HTTPS: {href}")
-            require(attrs.get("rel") == "noopener noreferrer", f"Author link needs rel=noopener noreferrer: {href}")
+            require(href.startswith("https://"), f"External links must use HTTPS: {href}")
+            require(attrs.get("rel") == "noopener noreferrer", f"External link needs rel=noopener noreferrer: {href}")
             self.author_links.append(href)
             return
         for key in ("href", "src", "poster", "data-image"):
@@ -96,7 +97,7 @@ def render():
     require(not re.search(r"__(?:META|DATA|METRICS|JS|CSP)__", page), "Unfilled template")
     parsed = PageAssets()
     parsed.feed(page)
-    # Author homepage links are the only external URLs allowed on the page.
+    # Author homepages and the arXiv paper are the only external URLs allowed on the page.
     scanned = page
     for href in parsed.author_links:
         scanned = scanned.replace(f'href="{href}"', "")
@@ -106,8 +107,8 @@ def render():
     require(parsed.meta.get("Content-Security-Policy") == policy, "CSP mismatch")
     require(len(parsed.nav_paper) == 1, "Expected one header Paper button")
     tag, attrs = parsed.nav_paper[0]
-    require(tag == "button" and "disabled" in attrs and "href" not in attrs,
-            "Header Paper button must remain unlinked")
+    require(tag == "a" and attrs.get("href", "").startswith("https://arxiv.org/abs/"),
+            "Header Paper button must link to the arXiv abstract page")
     refs = set(parsed.refs) | set(data_assets(data))
     for value in refs:
         local_asset(value)
