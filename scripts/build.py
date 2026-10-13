@@ -35,8 +35,9 @@ class PageAssets(HTMLParser):
     def __init__(self):
         super().__init__()
         self.refs = []
-        self.author_links = []
+        self.external_links = []
         self.nav_paper = []
+        self.nav_code = []
         self.meta = {}
 
     def handle_starttag(self, tag, attrs):
@@ -45,12 +46,14 @@ class PageAssets(HTMLParser):
             self.meta[attrs.get("name", attrs.get("http-equiv"))] = attrs.get("content")
         if "nav-paper" in attrs.get("class", "").split():
             self.nav_paper.append((tag, attrs))
+        if "nav-code" in attrs.get("class", "").split():
+            self.nav_code.append((tag, attrs))
         classes = attrs.get("class", "").split()
-        if tag == "a" and ("author-link" in classes or "nav-paper" in classes):
+        if tag == "a" and ({"author-link", "nav-paper", "nav-code"} & set(classes)):
             href = attrs.get("href", "")
             require(href.startswith("https://"), f"External links must use HTTPS: {href}")
             require(attrs.get("rel") == "noopener noreferrer", f"External link needs rel=noopener noreferrer: {href}")
-            self.author_links.append(href)
+            self.external_links.append(href)
             return
         for key in ("href", "src", "poster", "data-image"):
             if attrs.get(key):
@@ -97,9 +100,9 @@ def render():
     require(not re.search(r"__(?:META|DATA|METRICS|JS|CSP)__", page), "Unfilled template")
     parsed = PageAssets()
     parsed.feed(page)
-    # Author homepages and the arXiv paper are the only external URLs allowed on the page.
+    # Allow author homepages, the arXiv paper, and the code repository as outbound links.
     scanned = page
-    for href in parsed.author_links:
+    for href in parsed.external_links:
         scanned = scanned.replace(f'href="{href}"', "")
     require(not re.search(r"https?://|s3://|/Users/|/home/|gh[pousr]_", scanned),
             "Page contains an external URL, private path, or credential prefix")
@@ -109,6 +112,12 @@ def render():
     tag, attrs = parsed.nav_paper[0]
     require(tag == "a" and attrs.get("href", "").startswith("https://arxiv.org/abs/"),
             "Header Paper button must link to the arXiv abstract page")
+    require(len(parsed.nav_code) == 1, "Expected one header Code button")
+    tag, attrs = parsed.nav_code[0]
+    require(tag == "a" and attrs.get("href") == "https://github.com/vanillaer/GenCine",
+            "Header Code button must link to the GenCine repository")
+    require(attrs.get("target") == "_blank" and "disabled" not in attrs,
+            "Header Code button must be enabled and open in a new tab")
     refs = set(parsed.refs) | set(data_assets(data))
     for value in refs:
         local_asset(value)
